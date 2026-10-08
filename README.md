@@ -16,7 +16,7 @@ npm run preview  # gebaute Seite lokal ansehen
 ## Veröffentlichen mit Cloudflare
 
 Cloudflare baut bei jedem Push auf `main` automatisch neu.
-Build command: `npm run build` · Deploy command: `npx wrangler deploy` (Einstellungen in `wrangler.jsonc`, Name nicht ändern).
+Build command: `npm run build` · Deploy command: `npx wrangler deploy` (Einstellungen in `wrangler.jsonc`; der Name dort muss genau dem Worker-Namen in Cloudflare entsprechen: `big-d-ner-imbiss`).
 
 ## Wo ändere ich was?
 

@@ -1,0 +1,43 @@
+---
+import Icon from "./Icon.astro";
+import Oeffnungszeiten from "./Oeffnungszeiten.astro";
+import { site, telHref, mailHref } from "../config/site";
+---
+
+<footer class="bg-ink pb-20 text-white/75 md:pb-0">
+  <div class="container-x grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <img src="/logo-weiss.svg" alt={site.name} width="150" height="63" class="h-16 w-auto" loading="lazy" />
+      <p class="mt-5 max-w-xs text-[15px] leading-relaxed">Döner, Pizza und Pide in Passau. Frisch gebackenes Brot, freundliches Team, kostenlose Parkplätze.</p>
+      {site.halal && <p class="mt-4 inline-flex rounded-full border border-white/25 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white">Halal</p>}
+    </div>
+    <div>
+      <h2 class="mb-4 text-2xl text-white">Kontakt</h2>
+      <address class="space-y-3 text-[15px] not-italic">
+        <p>{site.adresse.strasse}<br />{site.adresse.plz} {site.adresse.ort}<br /><span class="text-white/55">{site.adresse.orientierung}</span></p>
+        <p><a href={telHref} class="inline-flex items-center gap-2 font-semibold text-white hover:underline"><Icon name="phone" class="h-4 w-4" />{site.telefon.anzeige}</a></p>
+        <p><a href={mailHref} class="inline-flex items-center gap-2 hover:text-white hover:underline"><Icon name="mail" class="h-4 w-4" />{site.email}</a></p>
+        <p><a href={site.facebook} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-white hover:underline"><Icon name="facebook" class="h-4 w-4" />Facebook</a></p>
+      </address>
+    </div>
+    <div class="lg:col-span-1">
+      <h2 class="mb-4 text-2xl text-white">Öffnungszeiten</h2>
+      <div class="-mx-3"><Oeffnungszeiten dunkel /></div>
+    </div>
+    <div>
+      <h2 class="mb-4 text-2xl text-white">Seiten</h2>
+      <ul class="space-y-2 text-[15px]">
+        <li><a class="hover:text-white hover:underline" href="/speisekarte">Speisekarte</a></li>
+        <li><a class="hover:text-white hover:underline" href="/ueber-uns">Über uns</a></li>
+        <li><a class="hover:text-white hover:underline" href="/kontakt">Kontakt</a></li>
+        <li><a class="hover:text-white hover:underline" href={site.route} target="_blank" rel="noopener">Route starten</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <div class="container-x flex flex-col gap-3 py-6 text-sm sm:flex-row sm:items-center sm:justify-between">
+      <p>© {new Date().getFullYear()} {site.name}, {site.stadt}</p>
+      <p class="flex gap-6"><a class="hover:text-white hover:underline" href="/impressum">Impressum</a><a class="hover:text-white hover:underline" href="/datenschutz">Datenschutz</a></p>
+    </div>
+  </div>
+</footer>

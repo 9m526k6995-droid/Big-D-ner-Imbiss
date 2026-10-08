@@ -1,0 +1,43 @@
+---
+/** Eine Zeile der Speisekarte. Mit `spalten` erscheinen die Varianten als Spalten (mobil mit Beschriftung). */
+import Badges from "./Badges.astro";
+import { euro } from "../lib/preis";
+import type { Gericht } from "../data/speisekarte";
+interface Props { g: Gericht; spalten?: string[] }
+const { g, spalten } = Astro.props;
+const kennziffern = [...(g.zusatzstoffe ?? []), ...(g.allergene ?? [])].join(",");
+const preisFuer = (label: string) => g.varianten?.find((v) => v.label === label)?.preis;
+const mitSpalten = !!spalten?.length && (g.varianten?.length || g.preis !== null);
+---
+
+<li class="py-4">
+  <div class:list={["gap-x-6", mitSpalten ? "sm:grid sm:items-baseline" : "flex items-baseline"]} style={mitSpalten ? `grid-template-columns: 1fr repeat(${spalten!.length}, 6.5rem)` : undefined}>
+    <div class="min-w-0">
+      <h3 class="inline font-sans text-[17px] font-semibold normal-case tracking-normal">{g.name}</h3>
+      {kennziffern && <sup class="ml-0.5 text-[11px] font-medium text-muted" title="Zusatzstoffe und Allergene, siehe Legende">{kennziffern}</sup>}
+      <span class="ml-2"><Badges g={g} /></span>
+    </div>
+    {!mitSpalten && (
+      <>
+        <span class="mx-3 min-w-6 flex-1 translate-y-[-4px] border-b-2 border-dotted border-line" aria-hidden="true"></span>
+        <span class="shrink-0 font-semibold tabular-nums">
+          {g.varianten?.length ? g.varianten.map((v) => `${v.label} ${euro(v.preis)}`).join(" · ") : g.preis !== null ? euro(g.preis) : <span class="text-sm font-medium text-muted">Preis auf Anfrage</span>}
+        </span>
+      </>
+    )}
+    {mitSpalten && (
+      <div class="mt-1.5 flex flex-wrap gap-x-5 gap-y-1 sm:contents">
+        {spalten!.map((s, i) => {
+          const p = g.varianten?.length ? preisFuer(s) : i === 0 ? g.preis : undefined;
+          return (
+            <span class="font-semibold tabular-nums sm:text-right">
+              <span class="mr-1.5 text-xs font-medium text-muted sm:hidden">{s}</span>
+              {p != null ? euro(p) : <span class="text-muted">–</span>}
+            </span>
+          );
+        })}
+      </div>
+    )}
+  </div>
+  {g.beschreibung && <p class="mt-1 max-w-xl text-[15px] leading-relaxed text-muted">{g.beschreibung}</p>}
+</li>

@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import Rechtstext from "../components/Rechtstext.astro";
+import { site, telHref, mailHref } from "../config/site";
+// Alle Angaben kommen aus src/config/site.ts (Inhabername dort eintragen).
+---
+
+<Base title="Impressum | Big Döner Imbiss Passau" description="Impressum von Big Döner Imbiss, Spitalhofstraße 95, 94032 Passau.">
+  <Rechtstext titel="Impressum">
+    <h2>Angaben gemäß § 5 DDG</h2>
+    <p>
+      {site.name}<br />
+      Inhaber: {site.inhaber}<br />
+      Rechtsform: {site.rechtsform}<br />
+      {site.adresse.strasse}<br />
+      {site.adresse.plz} {site.adresse.ort}
+    </p>
+    <h2>Kontakt</h2>
+    <p>Telefon: <a href={telHref}>{site.telefon.anzeige}</a><br />E-Mail: <a href={mailHref}>{site.email}</a></p>
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <p>{site.inhaber}<br />Anschrift wie oben</p>
+    <h2>Verbraucherstreitbeilegung</h2>
+    <p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+  </Rechtstext>
+</Base>

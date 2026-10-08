@@ -1,0 +1,28 @@
+---
+import Icon from "./Icon.astro";
+import { site } from "../config/site";
+const sterne = String(site.bewertung.sterne).replace(".", ",");
+---
+
+<section class="section bg-ink text-white" id="bewertungen">
+  <div class="container-x">
+    <div class="reveal grid items-center gap-10 rounded-[2rem] bg-ink-soft p-8 ring-1 ring-white/10 sm:p-12 lg:grid-cols-[auto_1fr] lg:gap-16">
+      <div class="text-center lg:text-left">
+        <p class="font-display text-[6.5rem] leading-none text-white sm:text-[8rem]">{sterne}</p>
+        <p class="mt-2 flex justify-center gap-1 text-crust lg:justify-start" aria-hidden="true">{[0, 1, 2, 3, 4].map(() => <Icon name="star" class="h-6 w-6 fill-current" />)}</p>
+        <p class="mt-3 text-white/70">{site.bewertung.anzahl} Bewertungen auf Google</p>
+      </div>
+      <div>
+        <p class="eyebrow !text-crust">Was Gäste sagen</p>
+        <h2 class="h2">Frisches Brot und ein freundliches Team</h2>
+        <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/75">
+          Das loben unsere Gäste auf Google am häufigsten: Das Brot wird stets frisch gebacken, und das Personal ist besonders freundlich. Lies selbst nach oder erzähl uns, wie es dir geschmeckt hat.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href={site.bewertungenUrl} target="_blank" rel="noopener" class="btn btn-light">Bewertungen ansehen</a>
+          <a href={site.bewertungenUrl} target="_blank" rel="noopener" class="btn btn-ghost"><Icon name="star" />Jetzt bewerten</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

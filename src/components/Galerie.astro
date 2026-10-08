@@ -1,0 +1,62 @@
+---
+import { getImage } from "astro:assets";
+import Foto from "./Foto.astro";
+import FotoPlatzhalter from "./FotoPlatzhalter.astro";
+import Icon from "./Icon.astro";
+import { galerie, galerieFilter } from "../data/galerie";
+import { fotoDatei } from "../lib/fotos";
+
+// Große Version für die Lightbox vorab erzeugen
+const eintraege = await Promise.all(
+  galerie.map(async (e) => {
+    const bild = fotoDatei(e.datei);
+    const gross = bild ? await getImage({ src: bild, width: bild.width, format: "webp" }) : null;
+    return { ...e, gross: gross?.src };
+  }),
+);
+---
+
+<section class="section bg-paper" id="galerie">
+  <div class="container-x">
+    <div class="reveal flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="eyebrow">Galerie</p>
+        <h2 class="h2">Einblicke</h2>
+      </div>
+      <div class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0" role="group" aria-label="Galerie filtern">
+        {galerieFilter.map((f, i) => (
+          <button type="button" data-filter={f.id} aria-pressed={i === 0 ? "true" : "false"} class="shrink-0 rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold transition hover:border-ink aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white">{f.label}</button>
+        ))}
+      </div>
+    </div>
+
+    <ul class="mt-10 columns-2 gap-3 sm:gap-4 lg:columns-3">
+      {eintraege.map((e, i) => (
+        <li data-galerie-item data-kategorien={e.kategorien.join(" ")} class="mb-3 break-inside-avoid sm:mb-4">
+          {e.gross ? (
+            <button type="button" data-open-lightbox data-full={e.gross} data-alt={e.alt} class="zoom group relative block w-full overflow-hidden rounded-2xl bg-sand" aria-label={`Foto vergrößern: ${e.alt}`}>
+              <Foto datei={e.datei} alt={e.alt} sizes="(min-width: 1024px) 370px, 50vw" class="!h-auto" />
+              <span class="absolute inset-0 bg-ink/0 transition group-hover:bg-ink/10"></span>
+            </button>
+          ) : (
+            <div class:list={["overflow-hidden rounded-2xl", i % 2 ? "aspect-[4/5]" : "aspect-[4/3]"]}>
+              <FotoPlatzhalter text={e.platzhalter} />
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <dialog data-lightbox class="m-auto h-full max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-ink/95" aria-label="Foto-Ansicht">
+    <div class="flex h-full flex-col items-center justify-center gap-4 p-4">
+      <img src="" alt="" class="max-h-[78vh] w-auto max-w-full rounded-xl object-contain" />
+      <p data-lightbox-caption class="max-w-xl text-center text-sm text-white/80"></p>
+      <div class="flex gap-3">
+        <button type="button" data-lb-prev class="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="Vorheriges Foto"><Icon name="arrow" class="h-5 w-5 rotate-180" /></button>
+        <button type="button" data-lb-close class="grid h-12 w-12 place-items-center rounded-full bg-white text-ink" aria-label="Schließen"><Icon name="close" class="h-5 w-5" /></button>
+        <button type="button" data-lb-next class="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="Nächstes Foto"><Icon name="arrow" class="h-5 w-5" /></button>
+      </div>
+    </div>
+  </dialog>
+</section>

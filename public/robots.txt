@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://big-doener-website.workers.dev/sitemap-index.xml

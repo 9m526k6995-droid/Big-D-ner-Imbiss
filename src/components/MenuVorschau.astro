@@ -1,0 +1,25 @@
+---
+import Gericht from "./Gericht.astro";
+import Icon from "./Icon.astro";
+import { speisekarte } from "../data/speisekarte";
+import { telHref } from "../config/site";
+// Zeigt alle Gerichte mit `beliebt: true` (max. 8)
+const beliebt = speisekarte.flatMap((k) => k.gerichte.filter((g) => g.beliebt)).slice(0, 8);
+---
+
+<section class="section bg-sand" id="karte">
+  <div class="container-x grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
+    <div class="reveal lg:sticky lg:top-28 lg:self-start">
+      <p class="eyebrow">Speisekarte</p>
+      <h2 class="h2">Die Lieblinge unserer Gäste</h2>
+      <p class="mt-5 max-w-sm text-lg leading-relaxed text-muted">Schnell bestellt, frisch gemacht. Ruf einfach an, dann ist dein Essen fertig, wenn du kommst.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/speisekarte" class="btn btn-dark">Ganze Speisekarte<Icon name="arrow" /></a>
+        <a href={telHref} class="btn btn-outline"><Icon name="phone" />Vorbestellen</a>
+      </div>
+    </div>
+    <ul class="reveal divide-y divide-line rounded-3xl bg-paper px-5 py-2 shadow-card sm:px-8">
+      {beliebt.map((g) => <Gericht g={g} />)}
+    </ul>
+  </div>
+</section>

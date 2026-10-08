@@ -1,0 +1,28 @@
+---
+import Foto from "./Foto.astro";
+---
+
+<section class="section overflow-hidden bg-ink text-white" id="brot">
+  <div class="container-x">
+    <div class="grid items-end gap-8 lg:grid-cols-2">
+      <div class="reveal">
+        <p class="eyebrow !text-crust">Unser Brot</p>
+        <h2 class="h2">Jeden Tag frisch<br />aus dem Ofen</h2>
+      </div>
+      <p class="reveal max-w-md text-lg leading-relaxed text-white/75 lg:justify-self-end">
+        Das Brot für Döner und Dürüm backen wir stets frisch. Außen knusprig, innen weich, mit Sesam. Genau das schmecken unsere Gäste, und genau darüber freuen wir uns, wenn sie es uns schreiben.
+      </p>
+    </div>
+    <div class="mt-12 grid gap-3 sm:grid-cols-6 sm:gap-5">
+      <div class="reveal zoom relative aspect-[16/10] overflow-hidden rounded-2xl sm:col-span-4 sm:row-span-2 sm:aspect-auto sm:min-h-[420px]">
+        <Foto datei="brot-02.jpg" alt="Drei frisch gebackene Brote mit Sesam nebeneinander" sizes="(min-width: 640px) 66vw, 100vw" />
+      </div>
+      <div class="reveal zoom relative aspect-[16/10] overflow-hidden rounded-2xl sm:col-span-2 sm:aspect-auto" style="--d:80ms">
+        <Foto datei="brot-01.jpg" alt="Frisch gebackene Brote mit Sesam, Tomaten und Pommes-Verpackungen" sizes="(min-width: 640px) 33vw, 100vw" />
+      </div>
+      <div class="reveal zoom relative aspect-[16/10] overflow-hidden rounded-2xl sm:col-span-2 sm:aspect-auto" style="--d:160ms">
+        <Foto datei="brot-03.jpg" alt="Ein Brot mit Sesam in Papier vor der Salatbar" sizes="(min-width: 640px) 33vw, 100vw" />
+      </div>
+    </div>
+  </div>
+</section>

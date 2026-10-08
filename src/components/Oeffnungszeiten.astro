@@ -1,0 +1,15 @@
+---
+/** Öffnungszeiten-Tabelle. Der heutige Tag wird per JS (Europe/Berlin) hervorgehoben. */
+import { site } from "../config/site";
+interface Props { dunkel?: boolean }
+const { dunkel = false } = Astro.props;
+---
+
+<ul class:list={["divide-y", dunkel ? "divide-white/10" : "divide-line"]}>
+  {site.oeffnungszeiten.map((t, i) => (
+    <li data-tag={i} class:list={["group flex items-center justify-between gap-4 px-3 py-3 text-[15px] data-[heute]:rounded-xl data-[heute]:font-semibold", dunkel ? "data-[heute]:bg-white/10" : "data-[heute]:bg-red/10 data-[heute]:text-red-dark"]}>
+      <span>{t.name}<span class:list={["ml-2 hidden text-xs font-semibold uppercase tracking-wider text-red", !dunkel && "group-data-[heute]:inline"]}>· heute</span></span>
+      <span class="whitespace-nowrap tabular-nums">{t.zeiten ? `${t.zeiten.von}–${t.zeiten.bis} Uhr` : "geschlossen"}</span>
+    </li>
+  ))}
+</ul>

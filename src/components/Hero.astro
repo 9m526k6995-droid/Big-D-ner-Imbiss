@@ -1,0 +1,33 @@
+---
+import Foto from "./Foto.astro";
+import Icon from "./Icon.astro";
+import { site, telHref } from "../config/site";
+---
+
+<section class="relative isolate overflow-hidden bg-ink text-white">
+  <div class="container-x grid items-center gap-0 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-20">
+    <!-- Bild: auf dem Handy oben, über die volle Breite -->
+    <div class="relative -mx-4 h-[46svh] min-h-[280px] sm:-mx-6 lg:order-2 lg:mx-0 lg:h-[540px] lg:overflow-hidden lg:rounded-[2rem] lg:shadow-2xl lg:shadow-black/40">
+      <Foto datei="doener-box-ayran.jpg" alt="Döner-Box mit Pommes und Dönerfleisch, dahinter ein Becher Ayran" eager sizes="(min-width: 1024px) 560px, 100vw" position="50% 60%" />
+      <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent lg:hidden"></div>
+      <p class="absolute bottom-6 right-4 hidden rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-xl lg:block">Halal · Hühner- & Putenfleisch</p>
+    </div>
+
+    <div class="relative -mt-14 pb-12 lg:mt-0 lg:pb-0">
+      <p class="eyebrow !text-crust">Passau · Spitalhofstraße</p>
+      <h1 class="text-[3.4rem] sm:text-7xl lg:text-[5.6rem]">Döner, der<br />nach <span class="text-red">Brot</span> duftet.</h1>
+      <p class="mt-5 max-w-md text-lg leading-relaxed text-white/80">
+        Hühner- und Putenfleisch vom Spieß, Pizza, Pide und Lahmacun. Das Brot backen wir immer frisch. Gleich gegenüber vom PaWo-Center, mit kostenlosen Parkplätzen.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a href="/speisekarte" class="btn btn-light">Speisekarte</a>
+        <a href={telHref} class="btn btn-red"><Icon name="phone" />Jetzt telefonisch vorbestellen</a>
+        <a href={site.route} target="_blank" rel="noopener" class="btn btn-ghost"><Icon name="route" />Route</a>
+      </div>
+      <a href={site.bewertungenUrl} target="_blank" rel="noopener" class="mt-8 inline-flex items-center gap-3 text-sm text-white/80 hover:text-white">
+        <span class="flex gap-0.5 text-crust" aria-hidden="true">{[0, 1, 2, 3, 4].map(() => <Icon name="star" class="h-5 w-5 fill-current" />)}</span>
+        <span><strong class="text-white">{String(site.bewertung.sterne).replace(".", ",")} ★</strong> · {site.bewertung.anzahl} Google-Bewertungen</span>
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,65 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import StickyBar from "../components/StickyBar.astro";
+import { site } from "../config/site";
+
+interface Props { title: string; description: string; bild?: string; schema?: boolean }
+const { title, description, bild = "/og.jpg", schema = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogBild = new URL(bild, site.url).href;
+
+const wochentagSchema = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const ld = {
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  name: site.name,
+  image: ogBild,
+  url: site.url,
+  telephone: site.telefon.tel,
+  email: site.email,
+  servesCuisine: ["Döner", "Türkisch", "Pizza", "Pide"],
+  address: { "@type": "PostalAddress", streetAddress: site.adresse.strasse, postalCode: site.adresse.plz, addressLocality: site.adresse.ort, addressCountry: "DE" },
+  openingHoursSpecification: site.oeffnungszeiten
+    .map((t, i) => (t.zeiten ? { "@type": "OpeningHoursSpecification", dayOfWeek: wochentagSchema[i], opens: t.zeiten.von, closes: t.zeiten.bis } : null))
+    .filter(Boolean),
+  aggregateRating: { "@type": "AggregateRating", ratingValue: String(site.bewertung.sterne), reviewCount: String(site.bewertung.anzahl), bestRating: "5" },
+  hasMenu: new URL("/speisekarte", site.url).href,
+  sameAs: [site.facebook],
+};
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#17110d" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogBild} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(ld)} />}
+    <script is:inline>document.documentElement.classList.add("js");</script>
+  </head>
+  <body>
+    <a href="#inhalt" class="sr-only z-[100] rounded-full bg-white px-5 py-3 font-semibold text-ink focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Zum Inhalt springen</a>
+    <Header />
+    <main id="inhalt"><slot /></main>
+    <Footer />
+    <StickyBar />
+    <script>
+      import "../scripts/status";
+      import "../scripts/ui";
+    </script>
+  </body>
+</html>

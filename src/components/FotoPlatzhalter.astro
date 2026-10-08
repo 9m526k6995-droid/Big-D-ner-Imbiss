@@ -1,0 +1,19 @@
+---
+/** Platzhalter für ein noch fehlendes Foto – Markenfarbe, dezentes Muster, kein „kaputtes Bild“. */
+interface Props { text?: string; class?: string }
+const { text = "Foto folgt", class: klasse = "" } = Astro.props;
+---
+
+<div
+  role="img"
+  aria-label={text}
+  class:list={["relative flex h-full w-full flex-col items-center justify-center gap-3 overflow-hidden bg-graphite text-center text-white/80", klasse]}
+  style="background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 18px), radial-gradient(circle at 30% 20%, rgb(215 25 32 / 0.35), transparent 60%)"
+>
+  <svg viewBox="0 0 48 48" class="h-10 w-10 text-crust" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="5" y="11" width="38" height="28" rx="5"></rect>
+    <circle cx="24" cy="25" r="7"></circle>
+    <path d="M17 11l2.5-4h9L31 11"></path>
+  </svg>
+  <span class="px-4 text-sm font-semibold uppercase tracking-[0.14em]">{text}</span>
+</div>

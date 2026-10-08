@@ -15,7 +15,9 @@ interface Props {
   schema?: boolean;
 }
 const { title = site.seo.title, description = site.seo.description, image = '/og.jpg', noindex = false, schema = false } = Astro.props;
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.siteUrl).toString();
+// saubere URL ohne .html / index (z. B. /speisekarte statt /speisekarte.html)
+const cleanPath = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/').replace(/(.)\/$/, '$1') || '/';
+const canonical = new URL(cleanPath, site.siteUrl).toString();
 const ogImage = new URL(image, site.siteUrl).toString();
 ---
 

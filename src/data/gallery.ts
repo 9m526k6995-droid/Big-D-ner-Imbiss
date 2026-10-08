@@ -28,5 +28,5 @@ export const gallery: GalleryImage[] = [
   { src: null, alt: 'Foto folgt – Innenbereich', category: 'Innenbereich', shape: 'square' },
   { src: 'doener-spiess.jpg', alt: 'Frischer Dönerspieß aus Hühner- und Putenfleisch', category: 'Essen', shape: 'portrait' },
   { src: 'pizza-thunfisch.jpg', alt: 'Pizza mit Thunfisch, Mais und Zwiebeln', category: 'Essen', shape: 'square' },
-  { src: null, alt: 'Foto folgt – Außenbereich', category: 'Außenbereich', shape: 'square' },
+  { src: 'aussen-03.jpg', alt: 'Big Döner Imbiss mit rotem Dach an der Spitalhofstraße, davor ein roter Kundenstopper', category: 'Außenbereich', shape: 'square', position: '50% 45%' },
 ];

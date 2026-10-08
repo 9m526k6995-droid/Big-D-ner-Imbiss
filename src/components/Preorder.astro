@@ -1,0 +1,19 @@
+---
+/** Hinweis „Gutes Essen braucht seine Zeit!“ – Startseite und Speisekarte */
+import { site } from '../config/site';
+import { telHref } from '../lib/site-helpers';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+const { class: cls = '' } = Astro.props as { class?: string };
+---
+
+<aside class:list={['reveal card flex flex-col gap-5 border-gold-500/40 bg-cream-50 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8', cls]} aria-label="Hinweis zur Vorbestellung">
+  <div class="flex items-start gap-4">
+    <span class="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-900 text-gold-400"><Icon name="clock" class="h-5 w-5" /></span>
+    <div>
+      <p class="font-display text-2xl leading-tight text-ink-900">{site.preorder.title}</p>
+      <p class="mt-1.5 max-w-xl text-pretty text-[1.02rem] leading-relaxed text-ink-700">{site.preorder.text}</p>
+    </div>
+  </div>
+  <Button href={telHref} variant="primary" size="lg" icon="phone" class="shrink-0">{site.phone.display}</Button>
+</aside>

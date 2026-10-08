@@ -1,0 +1,33 @@
+---
+import { site } from '../config/site';
+import { ratingText, reviewsUrl } from '../lib/site-helpers';
+import Stars from './Stars.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+---
+
+<section class="section bg-ink-900 text-cream-50" id="bewertungen" data-dark>
+  <div class="container-page">
+    <div class="reveal mx-auto max-w-2xl text-center">
+      <p class="eyebrow !text-gold-400">Google Bewertungen</p>
+      <h2 class="mt-3 text-balance text-3xl tracking-tight sm:text-5xl">Das sagen unsere Gäste</h2>
+      <div class="mt-10 flex flex-col items-center">
+        <p class="font-display text-7xl leading-none sm:text-8xl">{ratingText}<span class="text-3xl text-cream-300 sm:text-4xl"> / 5</span></p>
+        <div class="mt-4"><Stars class="h-6 w-6" /></div>
+        <p class="mt-3 text-cream-200">{site.google.reviewCount} Bewertungen bei Google</p>
+      </div>
+      <div class="mt-8">
+        <p class="text-sm font-medium uppercase tracking-[0.14em] text-cream-300">Besonders gelobt</p>
+        <ul class="mt-3 flex flex-wrap justify-center gap-2">
+          {site.praise.map((p) => (
+            <li class="inline-flex items-center gap-2 rounded-full border border-cream-50/20 px-4 py-1.5 text-[0.95rem] text-cream-100"><Icon name="heart" class="h-4 w-4 text-gold-400" />{p}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+        <Button href={reviewsUrl} variant="secondary" external icon="external">Bewertungen auf Google ansehen</Button>
+        <Button href={reviewsUrl} variant="outline-light" external icon="star">Big Döner bewerten</Button>
+      </div>
+    </div>
+  </div>
+</section>

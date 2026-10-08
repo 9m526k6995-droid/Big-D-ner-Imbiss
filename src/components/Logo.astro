@@ -1,0 +1,7 @@
+---
+/** Big-Döner-Logo (SVG aus /public). dark = weiße Variante für dunkle Flächen. */
+import { site } from '../config/site';
+const { dark = false, class: cls = '' } = Astro.props as { dark?: boolean; class?: string };
+---
+
+<img src={dark ? site.logo.srcLight : site.logo.src} alt={site.name} width={site.logo.width} height={site.logo.height} class:list={['h-10 w-auto max-w-[11rem] object-contain', cls]} />

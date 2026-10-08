@@ -1,57 +1,76 @@
-@import "tailwindcss";
-@import "@fontsource/anton/latin-400.css";
-@import "@fontsource-variable/inter/wght.css";
+@import 'tailwindcss';
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter';
 
-/* ── Design-Tokens ───────────────────────────────────────────── */
 @theme {
-  --color-ink: #17110d; /* warmer, fast schwarzer Grundton */
-  --color-ink-soft: #241a14;
-  --color-paper: #fbf8f3;
-  --color-sand: #f1e9dd;
-  --color-line: #e3d8c8;
-  --color-red: #d71920; /* Markenrot – gezielt einsetzen */
-  --color-red-dark: #b01218;
-  --color-graphite: #3b3f43; /* Fassade */
-  --color-muted: #5c5148;
-  --color-crust: #c8872e; /* Brotkruste */
-  --color-crust-dark: #8a5410; /* Text auf hellem Grund */
-  --font-display: "Anton", "Impact", "Arial Narrow", sans-serif;
-  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --shadow-card: 0 1px 2px rgb(23 17 13 / 0.06), 0 12px 32px -12px rgb(23 17 13 / 0.25);
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-ink-900: #1b1a18;
+  --color-ink-800: #252320;
+  --color-ink-700: #35322e;
+  --color-ink-600: #55504a;
+  --color-ink-500: #6d675e;
+  --color-cream-50: #fcf9f3;
+  --color-cream-100: #f6f0e4;
+  --color-cream-200: #ebe2cf;
+  --color-cream-300: #d9cdb2;
+  --color-gold-400: #d1ab5c;
+  --color-gold-500: #b8923f;
+  --color-gold-700: #7c5f17;
+  --color-bordeaux-600: #6e2a2a;
+
+  --container-page: 76rem;
 }
 
 @layer base {
-  html { scroll-behavior: smooth; scroll-padding-top: 5.5rem; -webkit-text-size-adjust: 100%; }
-  body { @apply bg-paper font-sans text-ink antialiased; }
-  h1, h2, h3 { @apply font-display uppercase tracking-wide leading-[1.02]; font-weight: 400; }
-  :focus-visible { outline: 3px solid var(--color-crust); outline-offset: 3px; border-radius: 4px; }
-  ::selection { background: var(--color-red); color: #fff; }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-cream-100 font-sans text-ink-900 antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); font-optical-sizing: auto; }
+  :focus-visible { outline: 2px solid var(--color-gold-500); outline-offset: 3px; border-radius: 4px; }
+  ::selection { background: var(--color-gold-400); color: var(--color-ink-900); }
+  @media (max-width: 767px) { body { padding-bottom: 4.75rem; } }
 }
 
 @layer components {
-  .container-x { @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8; }
-  .btn { @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-semibold transition duration-200 active:scale-[0.98]; }
-  .btn-red { @apply bg-red text-white shadow-lg shadow-red/25 hover:bg-red-dark; }
-  .btn-light { @apply bg-white text-ink hover:bg-sand; }
-  .btn-ghost { @apply border border-white/40 text-white hover:bg-white/10; }
-  .btn-dark { @apply bg-ink text-white hover:bg-graphite; }
-  .btn-outline { @apply border border-ink/25 text-ink hover:bg-ink hover:text-white; }
-  .eyebrow { @apply mb-3 inline-block text-sm font-semibold uppercase tracking-[0.18em] text-red; }
+  .container-page { @apply mx-auto w-full max-w-page px-5 sm:px-8; }
   .section { @apply py-16 sm:py-24; }
-  .h2 { @apply text-4xl sm:text-5xl lg:text-6xl; }
+  .eyebrow { @apply text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-gold-700; }
+  .card { @apply rounded-2xl border border-ink-900/10 bg-cream-50 transition duration-300; }
+  .card-hover:hover { @apply -translate-y-0.5 border-ink-900/20 shadow-[0_14px_30px_-18px_rgba(27,26,24,0.35)]; }
+  .skip-link { @apply absolute left-4 top-3 z-[100] -translate-y-20 rounded-full bg-ink-900 px-4 py-2 text-sm text-cream-50 focus:translate-y-0; }
 }
 
-/* ── Animationen (nur wenn JS läuft und Bewegung erlaubt ist) ── */
+/* Dezentes Einblenden – nur wenn JS aktiv und Bewegung erlaubt */
 @media (prefers-reduced-motion: no-preference) {
-  .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: var(--d, 0ms); }
-  .js .reveal.is-in { opacity: 1; transform: none; }
-  .zoom img { transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
-  .zoom:hover img { transform: scale(1.06); }
+  .js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+  .js .reveal.is-visible { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
+/* sanfter Seitenübergang (Browser mit View Transitions) */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+
+/* Speisekarte: Tabs ohne Scrollbalken */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Rechtstexte */
+.prose-legal h2 { font-size: 1.5rem; margin: 2.25rem 0 0.6rem; }
+.prose-legal h3 { font-size: 1.2rem; margin: 1.5rem 0 0.4rem; }
+.prose-legal p, .prose-legal ul { margin: 0.6rem 0; color: var(--color-ink-700); }
+.prose-legal ul { list-style: disc; padding-left: 1.4rem; }
+.prose-legal a { text-decoration: underline; text-decoration-color: var(--color-gold-500); text-underline-offset: 3px; }

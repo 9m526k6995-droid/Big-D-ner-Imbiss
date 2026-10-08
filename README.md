@@ -1,7 +1,8 @@
 # Big Döner Imbiss – Website
 
 Statische Website für **Big Döner Imbiss**, Spitalhofstraße 95, 94032 Passau (gegenüber PaWo-Center).
-Gebaut mit Astro, Tailwind CSS und TypeScript. Keine Cookies, kein Tracking, keine externen Skripte oder Schriften.
+Gebaut mit Astro, Tailwind CSS und TypeScript. Keine Cookies, kein Tracking, keine externen Skripte oder Schriften
+(Fraunces + Inter liegen lokal).
 
 ## Seite starten
 
@@ -14,53 +15,56 @@ npm run preview  # gebaute Seite lokal ansehen
 
 ## Veröffentlichen mit Cloudflare
 
-1. Im Cloudflare-Dashboard: **Workers & Pages → Create → Import a repository** und dieses Repo wählen.
-2. **Build command:** `npm run build`
-3. **Deploy command:** `npx wrangler deploy`
-4. Speichern und deployen. Die Einstellungen stehen in `wrangler.jsonc`.
-
-Danach die echte Adresse der Website in `src/config/site.ts` bei `url` eintragen (und in `public/robots.txt`).
+Cloudflare baut bei jedem Push auf `main` automatisch neu.
+Build command: `npm run build` · Deploy command: `npx wrangler deploy` (Einstellungen in `wrangler.jsonc`, Name nicht ändern).
 
 ## Wo ändere ich was?
 
 | Was | Wo |
 |---|---|
-| Telefon, E-Mail, Adresse, Facebook, Google-Bewertung | `src/config/site.ts` |
-| Öffnungszeiten | `src/config/site.ts` → `oeffnungszeiten` (Montag bis Sonntag, `zeiten: null` = geschlossen) |
-| Inhabername fürs Impressum (Salih Wilo) | `src/config/site.ts` → `inhaber` (nur dort, einmal) |
-| Speisekarte | `src/data/speisekarte.ts` |
-| Galerie | `src/data/galerie.ts` |
+| Name, Adresse, Telefon, E-Mail, Facebook, Google-Bewertung, Links | `src/config/site.ts` |
+| **Website-Adresse** (Canonical, Open Graph, Sitemap, robots.txt, JSON-LD) | `src/config/site.ts` → `siteUrl` (nur dort) |
+| Öffnungszeiten (Live-Status „Jetzt geöffnet/geschlossen“, Europe/Berlin) | `src/config/site.ts` → `hours` |
+| Inhaber fürs Impressum | `src/config/site.ts` → `legal.owner` |
+| Hinweis „Gutes Essen braucht seine Zeit!“ | `src/config/site.ts` → `preorder` |
+| Speisekarte, Preise, Allergene, Zutaten | `src/data/speisekarte.ts` |
+| Angebots-Kacheln Startseite | `src/data/offer.ts` |
+| Galerie | `src/data/gallery.ts` |
 | Team | `src/data/team.ts` |
-| Kacheln „Unsere Klassiker“ | `src/components/Klassiker.astro` |
 | Farben & Schriften | `src/styles/global.css` (`@theme`) |
 
-Solange beim Inhaber noch `[INHABER: VOR- UND NACHNAME]` steht, warnt der Build:
-`ACHTUNG: Inhabername im Impressum fehlt`.
+## Fotos
 
-Der Öffnungsstatus („Jetzt geöffnet / Geschlossen / Öffnet um …“) wird automatisch aus den Öffnungszeiten berechnet, immer in deutscher Zeit (Europe/Berlin).
+Alle Fotos liegen in `fotos/` und werden per Dateiname eingebunden (Astro erzeugt AVIF/WebP automatisch).
+Platzhalter („Foto folgt …“) haben `src: null` bzw. `image: null` – Foto nach `fotos/` legen und Dateinamen eintragen.
+Fehlt ein eingetragenes Foto, erscheint ein Platzhalter bzw. (in der Speisekarte) kein Bild – nie ein kaputtes Bild.
 
-## Speisekarte ersetzen
+Noch nicht vorhanden, aber in der Speisekarte vorgesehen: `fotos/pizza-doener.jpg` (Pizza Kebab), `fotos/falafel-teller.jpg` (Falafelteller).
 
-`src/data/speisekarte.ts` komplett durch die echte Karte ersetzen. Das Format (Typen oben in der Datei) bitte beibehalten:
+## Allergene – bitte anhand der Produktverpackungen prüfen
 
-- `preis: 7.5` wird als „7,50 €“ angezeigt, `preis: null` als „Preis auf Anfrage“.
-- Größen: bei der Kategorie `spalten: ["Ø 32 cm", "Ø 36 cm"]` setzen und beim Gericht
-  `varianten: [{ label: "Ø 32 cm", preis: 9 }, { label: "Ø 36 cm", preis: 11 }]` (Labels müssen gleich sein).
-- `beliebt: true` → erscheint auch auf der Startseite. Außerdem `vegetarisch`, `vegan`, `scharf`.
-- Kennziffern: `zusatzstoffe: ["1", "3"]`, `allergene: ["A"]` – Erklärung in `zusatzstoffeLegende` / `allergeneLegende`.
-- Leere Kategorien werden automatisch ausgeblendet.
-- `speisekarteHinweis` (Text über der Karte) und `speisekarteStand` (z. B. „Stand: November 2026“).
+Die Kennzeichnung dieser Produkte stammt nicht von der Verpackung und muss noch geprüft werden
+(im Code mit `TODO` in `src/data/speisekarte.ts` markiert):
 
-## Platzhalter durch ein Foto ersetzen
-
-1. Foto als `.jpg` nach `fotos/` legen, z. B. `innen-01.jpg`.
-2. In `src/data/galerie.ts` (oder `team.ts`) beim Platzhalter `datei: null` durch `datei: "innen-01.jpg"` ersetzen
-   und Alt-Text anpassen. Fertig – Größen, WebP/AVIF und Lazy Loading erledigt Astro.
-
-Fehlt ein eingetragenes Foto, zeigt die Seite automatisch einen Platzhalter statt eines kaputten Bildes.
+- Rindersalami
+- Rindersucuk
+- Putenschinken
+- Oliven
+- Pepperoni
+- Dose scharfe Paprika
+- Artischocken
+- Falafel-Bällchen
+- Lahmacun-Belag
+- Baklava
+- Fanta
+- Sprite
+- Eistee
+- Uludağ Gazoz
+- Apfelschorle
+- Capri-Sonne
+- Energy Drinks
 
 ## Logo & Vorschaubild
 
 - `public/logo.svg`, `public/logo-weiss.svg`, `public/favicon.svg` werden von `node scripts/make-logo.mjs` erzeugt.
 - `public/og.jpg` (Vorschaubild für WhatsApp/Facebook) erzeugt `node scripts/make-og.mjs`.
-- Fotos nachschärfen: `node scripts/schaerfen.mjs <quelle> <ziel>` (Lanczos-Vergrößerung + Schärfen).

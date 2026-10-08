@@ -1,0 +1,32 @@
+---
+import { site } from '../config/site';
+import { routeUrl, telHref } from '../lib/site-helpers';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+---
+
+<section class="section bg-cream-50" id="standort">
+  <div class="container-page grid items-stretch gap-8 lg:grid-cols-5 lg:gap-12">
+    <div class="reveal lg:col-span-3 lg:self-center">
+      <SectionHeading eyebrow="Standort" title="Gegenüber dem PaWo-Center" text="In der Spitalhofstraße 95 – mit kostenlosen Parkplätzen direkt am Imbiss." />
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <Button href={routeUrl} variant="primary" icon="route" external>Route mit Google Maps öffnen</Button>
+        <Button href={telHref} variant="ghost" icon="phone">{site.phone.display}</Button>
+      </div>
+      <p class="mt-4 text-sm text-ink-500">Es wird keine Karte geladen – beim Klick öffnet sich Google Maps in einem neuen Tab.</p>
+    </div>
+
+    <div class="reveal card p-7 sm:p-9 lg:col-span-2">
+      <span class="flex h-12 w-12 items-center justify-center rounded-full bg-ink-900 text-gold-400"><Icon name="pin" class="h-6 w-6" /></span>
+      <address class="mt-5 not-italic">
+        <p class="font-display text-2xl">{site.name}</p>
+        <p class="mt-1 text-lg leading-relaxed text-ink-700">{site.address.street}<br />{site.address.zip} {site.address.city}<br />{site.address.landmark}</p>
+      </address>
+      <p class="mt-5 flex items-center gap-2 border-t border-ink-900/10 pt-5 text-[0.95rem] text-ink-700">
+        <span data-open-dot class="h-2 w-2 rounded-full bg-ink-500"></span>
+        <span data-open-text>Öffnungszeiten siehe Kontakt</span>
+      </p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,90 @@
+---
+import { getImage } from 'astro:assets';
+import { gallery } from '../data/gallery';
+import { foto } from '../lib/fotos';
+import Pic from './Pic.astro';
+import Placeholder from './Placeholder.astro';
+import SectionHeading from './SectionHeading.astro';
+
+const cats = ['Alle', ...Array.from(new Set(gallery.map((g) => g.category)))];
+
+// große Version für die Lightbox (WebP, max. 1600 px)
+const items = await Promise.all(
+  gallery.map(async (g) => {
+    const img = foto(g.src);
+    const full = img ? (await getImage({ src: img, width: Math.min(img.width, 1600), format: 'webp' })).src : null;
+    return { ...g, full };
+  }),
+);
+---
+
+<section class="section" id="galerie">
+  <div class="container-page">
+    <SectionHeading eyebrow="Galerie" title="Einblicke" text="Essen, Imbiss und Team – ein erster Eindruck von Big Döner." />
+
+    <div class="mt-8 flex flex-wrap gap-2" role="group" aria-label="Galerie filtern" id="gallery-filters">
+      {cats.map((c, i) => (
+        <button type="button" data-filter={c} aria-pressed={i === 0} class="rounded-full border border-ink-900/15 px-4 py-1.5 text-sm font-medium transition-colors hover:border-ink-900 aria-pressed:border-ink-900 aria-pressed:bg-ink-900 aria-pressed:text-cream-50">{c}</button>
+      ))}
+    </div>
+
+    <ul class="mt-8 grid grid-flow-dense grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4" id="gallery-grid">
+      {
+        items.map((g) => {
+          const big = g.shape === 'portrait' || g.shape === 'wide';
+          return (
+            <li data-cat={g.category} class:list={['reveal relative', g.shape === 'portrait' && 'row-span-2', g.shape === 'wide' && 'col-span-2']}>
+              {g.full ? (
+                <button type="button" data-full={g.full} data-alt={g.alt} aria-label={`${g.alt} – vergrößern`} class:list={['group block w-full overflow-hidden rounded-xl bg-cream-200', big ? 'absolute inset-0' : 'relative']}>
+                  <Pic datei={g.src} alt={g.alt} sizes="(min-width:1024px) 300px, (min-width:640px) 33vw, 50vw" class:list={['block w-full', big ? 'h-full' : 'aspect-square']} imgClass="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" position={g.position} />
+                  <span class="absolute bottom-2 left-2 rounded-full bg-ink-900/70 px-2.5 py-0.5 text-xs font-medium text-cream-50 backdrop-blur-sm">{g.category}</span>
+                </button>
+              ) : (
+                <div class:list={['block w-full overflow-hidden rounded-xl', big ? 'absolute inset-0' : 'relative']}>
+                  <Placeholder text={g.alt} class:list={['w-full', big ? 'h-full' : 'aspect-square']} />
+                  <span class="absolute bottom-2 left-2 rounded-full bg-ink-900/70 px-2.5 py-0.5 text-xs font-medium text-cream-50 backdrop-blur-sm">{g.category}</span>
+                </div>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+
+  <dialog id="lightbox" class="m-auto max-h-[92vh] max-w-[min(94vw,70rem)] overflow-visible rounded-2xl bg-transparent p-0 backdrop:bg-ink-900/85" aria-label="Bildansicht">
+    <form method="dialog" class="relative">
+      <div id="lightbox-slot"></div>
+      <button class="absolute right-3 top-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-ink-900/80 text-cream-50 hover:bg-ink-900" aria-label="Schließen">
+        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+      </button>
+    </form>
+  </dialog>
+</section>
+
+<script>
+  const grid = document.getElementById('gallery-grid');
+  const filters = document.getElementById('gallery-filters');
+  filters?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-filter]');
+    if (!btn) return;
+    const f = btn.dataset.filter;
+    filters.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    grid?.querySelectorAll<HTMLElement>('li').forEach((li) => (li.hidden = f !== 'Alle' && li.dataset.cat !== f));
+  });
+
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement | null;
+  // Bild wird erst beim Öffnen erzeugt – so gibt es nie ein <img> ohne Quelle
+  const slot = document.getElementById('lightbox-slot');
+  const big = document.createElement('img');
+  big.className = 'max-h-[88vh] w-auto max-w-full rounded-2xl object-contain';
+  grid?.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-full]');
+    if (!b || !dlg || !slot) return;
+    big.src = b.dataset.full!;
+    big.alt = b.dataset.alt ?? '';
+    if (!big.isConnected) slot.append(big);
+    dlg.showModal();
+  });
+  dlg?.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+</script>

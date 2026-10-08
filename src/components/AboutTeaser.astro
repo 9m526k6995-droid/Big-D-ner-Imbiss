@@ -1,0 +1,31 @@
+---
+import Pic from './Pic.astro';
+import SectionHeading from './SectionHeading.astro';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import { site } from '../config/site';
+const icons = ['bread', 'check', 'parking', 'phone'];
+---
+
+<section class="section bg-cream-50" id="ueber-uns-teaser">
+  <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div class="reveal">
+      <SectionHeading eyebrow="Über uns" title="Gegenüber dem PaWo-Center" />
+      <div class="mt-6 space-y-4 text-lg leading-relaxed text-ink-700">
+        <p>
+          In der Spitalhofstraße findet ihr unseren Imbiss mit dem roten Dach. Das Brot backen wir jeden Tag frisch, das Fleisch für unsere Spieße ist Hühner- und Putenfleisch – halal.
+        </p>
+        <p>Parken ist direkt bei uns kostenlos. Und wer Pizza oder Pide möchte, ruft am besten vorher kurz an.</p>
+      </div>
+      <ul class="mt-7 grid grid-cols-2 gap-3 text-[0.95rem]">
+        {site.features.map((f, i) => (
+          <li class="flex items-center gap-2.5 text-ink-700"><Icon name={icons[i] ?? 'star'} class="h-5 w-5 shrink-0 text-gold-700" />{f}</li>
+        ))}
+      </ul>
+      <div class="mt-9"><Button href="/ueber-uns" variant="primary" icon="arrow">Mehr über uns</Button></div>
+    </div>
+    <div class="reveal">
+      <Pic datei="aussen-01.jpg" alt="Big Döner Imbiss mit rotem Dach in der Spitalhofstraße 95 in Passau" sizes="(min-width:1024px) 560px, 100vw" class="block aspect-[4/3] overflow-hidden rounded-2xl bg-cream-200 lg:aspect-[5/4]" imgClass="h-full w-full object-cover" position="45% 50%" />
+    </div>
+  </div>
+</section>

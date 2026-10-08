@@ -1,75 +1,226 @@
 ---
-import Base from "../layouts/Base.astro";
-import Seitenkopf from "../components/Seitenkopf.astro";
-import Gericht from "../components/Gericht.astro";
-import Icon from "../components/Icon.astro";
-import { speisekarte, zusatzstoffeLegende, allergeneLegende, speisekarteHinweis, speisekarteStand } from "../data/speisekarte";
-import { site, telHref } from "../config/site";
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import Pic from '../components/Pic.astro';
+import Preorder from '../components/Preorder.astro';
+import {
+  speisekarte,
+  speisekarteStand,
+  speisekarteHinweis,
+  allergeneLegende,
+  zusatzstoffeLegende,
+  zutaten,
+  formatPreis,
+  kennzeichnungText,
+} from '../data/speisekarte';
+import { foto } from '../lib/fotos';
+import { telHref } from '../lib/site-helpers';
 
-const kategorien = speisekarte.filter((k) => k.gerichte.length > 0); // leere Kategorien ausblenden
-const zusatz = Object.entries(zusatzstoffeLegende);
-const allergene = Object.entries(allergeneLegende);
+const preisText = (p: number | null | undefined, single: boolean) => (p == null ? (single ? 'Preis auf Anfrage' : '–') : formatPreis(p));
+let tipId = 0;
 ---
 
-<Base title="Speisekarte | Big Döner Imbiss Passau" description="Speisekarte von Big Döner in Passau: Döner, Dürüm, Döner-Box, Pizza, Pide, Lahmacun, Falafel, Baklava und Getränke. Telefonisch vorbestellen.">
-  <Seitenkopf eyebrow="Speisekarte" titel="Frisch gemacht, schnell bestellt" text="Ruf an, sag uns, was du möchtest, und hol es ab, wenn es fertig ist.">
-    <a href={telHref} class="btn btn-red mt-8"><Icon name="phone" />Jetzt telefonisch vorbestellen</a>
-  </Seitenkopf>
-
-  <!-- Kategorie-Navigation: wischbar, klebt unter dem Header -->
-  <nav aria-label="Kategorien" class="sticky top-16 z-30 border-b border-line bg-paper/95 backdrop-blur">
-    <div class="container-x">
-      <div class="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 py-3 sm:mx-0 sm:px-0">
-        {kategorien.map((k) => (
-          <a data-kat-link href={`#${k.id}`} class="shrink-0 rounded-full px-4 py-2 text-sm font-semibold text-muted transition hover:text-ink data-[aktiv]:bg-ink data-[aktiv]:text-white">{k.titel}</a>
-        ))}
-      </div>
+<Layout
+  title="Speisekarte | Döner, Pizza, Pide, Lahmacun & Falafel – Big Döner Imbiss Passau"
+  description="Speisekarte von Big Döner Imbiss in der Spitalhofstraße 95 in Passau: Döner, Dürüm, Pizza, Pide, Lahmacun, Falafel, Extras und Getränke – mit Preisen, Allergenen und Zusatzstoffen."
+>
+  <PageHeader eyebrow="Big Döner Imbiss" title="Unsere Speisekarte" text="Döner, Pizza, Pide, Lahmacun, Falafel und Getränke – frisch zubereitet, mit täglich frisch gebackenem Brot.">
+    <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <Button href={telHref} variant="primary" icon="phone">Anrufen & vorbestellen</Button>
+      <p class="text-sm text-ink-500">Stand: {speisekarteStand}</p>
     </div>
-  </nav>
+  </PageHeader>
 
-  <div class="container-x py-12 sm:py-16">
-    {speisekarteHinweis && (
-      <p class="mb-10 flex items-start gap-3 rounded-2xl bg-sand p-5 text-[15px] leading-relaxed">
-        <Icon name="phone" class="mt-0.5 h-5 w-5 shrink-0 text-red" />
-        <span>{speisekarteHinweis} <a href={telHref} class="font-semibold text-red-dark underline underline-offset-2">{site.telefon.anzeige}</a></span>
-      </p>
-    )}
-
-    <div class="grid gap-14 lg:grid-cols-2 lg:gap-x-16">
-      {kategorien.map((k) => (
-        <section id={k.id} class:list={["scroll-mt-36", k.spalten?.length || k.gerichte.length > 8 ? "lg:col-span-2" : ""]} aria-labelledby={`t-${k.id}`}>
-          <div class="flex items-end justify-between gap-4 border-b-2 border-ink pb-3">
-            <div>
-              <h2 id={`t-${k.id}`} class="text-4xl sm:text-5xl">{k.titel}</h2>
-              {k.untertitel && <p class="mt-1 text-[15px] text-muted">{k.untertitel}</p>}
-            </div>
-          </div>
-          {k.spalten?.length ? (
-            <div class="mt-3 hidden gap-x-6 text-right text-xs font-semibold uppercase tracking-wider text-muted sm:grid" style={`grid-template-columns: 1fr repeat(${k.spalten.length}, 6.5rem)`} aria-hidden="true">
-              <span></span>
-              {k.spalten.map((s) => <span>{s}</span>)}
-            </div>
-          ) : null}
-          <ul class:list={["divide-y divide-line", k.gerichte.length > 8 && !k.spalten?.length && "lg:columns-2 lg:gap-x-16 lg:divide-y-0 [&>li]:break-inside-avoid lg:[&>li]:border-b lg:[&>li]:border-line"]}>
-            {k.gerichte.map((g) => <Gericht g={g} spalten={k.spalten} />)}
-          </ul>
-          {k.hinweis && <p class="mt-3 text-sm text-muted">{k.hinweis}</p>}
-        </section>
-      ))}
-    </div>
-
-    <footer class="mt-16 grid gap-8 border-t border-line pt-8 text-sm text-muted md:grid-cols-2">
-      <div class="space-y-1">
-        <p class="font-semibold text-ink">Preise inkl. MwSt. Änderungen vorbehalten.</p>
-        {speisekarteStand && <p>{speisekarteStand}</p>}
-        {site.halal && <p>Unser Fleisch ist halal.</p>}
-      </div>
-      {(zusatz.length > 0 || allergene.length > 0) && (
-        <div class="grid gap-6 sm:grid-cols-2">
-          {zusatz.length > 0 && <dl><dt class="mb-2 font-semibold text-ink">Zusatzstoffe</dt>{zusatz.map(([k, v]) => <dd><sup>{k}</sup> {v}</dd>)}</dl>}
-          {allergene.length > 0 && <dl><dt class="mb-2 font-semibold text-ink">Allergene</dt>{allergene.map(([k, v]) => <dd><sup>{k}</sup> {v}</dd>)}</dl>}
-        </div>
-      )}
-    </footer>
+  <div id="menu-tabs" class="sticky top-16 z-30 border-b border-ink-900/10 bg-cream-100/95 backdrop-blur-md lg:top-[4.5rem]">
+    <nav aria-label="Kategorien der Speisekarte" class="container-page">
+      <ul class="no-scrollbar -mx-5 flex gap-1.5 overflow-x-auto px-5 py-3 sm:mx-0 sm:px-0">
+        {
+          speisekarte.map((c, i) => (
+            <li class="shrink-0">
+              <a href={`#${c.id}`} data-tab={c.id} aria-current={i === 0 ? 'true' : undefined} class="block rounded-full border border-transparent px-4 py-2 text-[0.95rem] font-medium text-ink-700 transition-colors hover:border-ink-900/20 aria-[current=true]:bg-ink-900 aria-[current=true]:text-cream-50">
+                {c.titel}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </div>
-</Base>
+
+  <div class="container-page py-12 sm:py-16">
+    <div class="mx-auto max-w-3xl">
+      <Preorder class="mb-14 sm:mb-20" />
+    </div>
+    <div class="mx-auto max-w-3xl space-y-14 sm:space-y-20">
+      {
+        speisekarte.map((c) => (
+          <section id={c.id} aria-labelledby={`h-${c.id}`} class="scroll-mt-12">
+            <h2 id={`h-${c.id}`} class="flex items-center gap-4 text-3xl tracking-tight sm:text-4xl">
+              {c.titel}
+              <span class="h-px flex-1 bg-gradient-to-r from-gold-500/60 to-transparent" aria-hidden="true" />
+            </h2>
+            {c.hinweis && <p class="mt-3 text-[0.95rem] text-ink-600">{c.hinweis}</p>}
+            {c.gruppen.map((g) => {
+              const cols = g.spalten ?? [];
+              const single = cols.length === 0;
+              return (
+                <div class="mt-6">
+                  {g.titel && <h3 class="mb-1 text-xl text-ink-600">{g.titel}</h3>}
+                  {!single && (
+                    <div class="flex items-end gap-4 pb-2 text-xs font-semibold uppercase tracking-[0.1em] text-ink-500" aria-hidden="true">
+                      <span class="flex-1" />
+                      <span class="flex shrink-0 gap-2 sm:gap-4">
+                        {cols.map((s) => <span class="w-[3.9rem] text-right normal-case tracking-normal sm:w-20">{s}</span>)}
+                      </span>
+                    </div>
+                  )}
+                  <ul class="divide-y divide-ink-900/10 border-y border-ink-900/10">
+                    {g.gerichte.map((item) => {
+                      const info = kennzeichnungText(item);
+                      const codes = [...(item.allergene ?? []), ...(item.zusatzstoffe ?? [])];
+                      const id = `tip-${++tipId}`;
+                      const thumb = item.bild && foto(item.bild) ? item.bild : null;
+                      return (
+                        <li class="relative flex items-center gap-4 py-3.5">
+                          {thumb && (
+                            <Pic datei={thumb} alt={item.name} sizes="56px" class="block h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-cream-200 max-sm:hidden" imgClass="h-full w-full object-cover" />
+                          )}
+                          <span class="min-w-0 flex-1">
+                            <span class="text-[1.05rem] leading-snug">{item.name}</span>
+                            {codes.length > 0 && <sup class="ml-0.5 text-[0.68rem] font-medium tracking-wide text-ink-500">{codes.join(',')}</sup>}
+                            {info && (
+                              <button type="button" class="info-btn ml-1 inline-flex h-6 w-6 translate-y-[0.2rem] items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-ink-900/5 hover:text-ink-900 aria-expanded:bg-ink-900 aria-expanded:text-cream-50" aria-expanded="false" aria-controls={id} aria-label={`Allergene und Zusatzstoffe: ${item.name}`}>
+                                <Icon name="info" class="h-4 w-4" />
+                              </button>
+                            )}
+                            {item.vegetarisch && (
+                              <span class="ml-2 inline-flex translate-y-0.5 items-center gap-1 rounded-full bg-emerald-800/10 px-2 py-0.5 text-xs font-medium text-emerald-900" title="Vegetarisch">
+                                <Icon name="leaf" class="h-3 w-3" />
+                                <span class="sr-only">Vegetarisch</span><span aria-hidden="true">vegetarisch</span>
+                              </span>
+                            )}
+                            {item.beliebt && (
+                              <span class="ml-2 inline-flex translate-y-0.5 items-center gap-1 rounded-full bg-gold-500/20 px-2 py-0.5 text-xs font-medium text-gold-700">
+                                <Icon name="star" class="h-3 w-3" filled />
+                                beliebt
+                              </span>
+                            )}
+                            {item.beschreibung && <span class="block text-sm text-ink-500">{item.beschreibung}</span>}
+                            {info && (
+                              <span id={id} role="note" hidden class="mt-2 block w-fit max-w-full rounded-lg bg-ink-900 px-3 py-2 text-[0.85rem] leading-snug text-cream-50 shadow-[0_14px_30px_-18px_rgba(27,26,24,0.6)]">
+                                {info}
+                              </span>
+                            )}
+                          </span>
+                          {single ? (
+                            <span class:list={['shrink-0 whitespace-nowrap text-right font-semibold tabular-nums text-ink-900', item.preise[0] == null && 'text-[0.9rem] font-medium text-ink-600']}>{preisText(item.preise[0], true)}</span>
+                          ) : (
+                            <span class="flex shrink-0 gap-2 sm:gap-4">
+                              {cols.map((s, i) => (
+                                <span class:list={['w-[3.9rem] whitespace-nowrap text-right font-semibold tabular-nums sm:w-20', item.preise[i] == null ? 'text-ink-500/60' : 'text-ink-900']}>
+                                  <span class="sr-only">{s}: </span>
+                                  {preisText(item.preise[i], false)}
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </section>
+        ))
+      }
+    </div>
+
+    <!-- Legende -->
+    <section aria-labelledby="h-legende" class="mx-auto mt-16 max-w-3xl sm:mt-20">
+      <h2 id="h-legende" class="flex items-center gap-4 text-2xl tracking-tight sm:text-3xl">
+        Kennzeichnung
+        <span class="h-px flex-1 bg-gradient-to-r from-gold-500/60 to-transparent" aria-hidden="true"></span>
+      </h2>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <div class="card p-5 sm:p-6">
+          <h3 class="text-lg">Allergene</h3>
+          <p class="text-xs text-ink-500">14 Hauptallergene nach LMIV</p>
+          <dl class="mt-3 grid grid-cols-[1.5rem_1fr] gap-x-2 gap-y-1 text-[0.92rem] text-ink-700">
+            {Object.entries(allergeneLegende).map(([k, v]) => (<><dt class="font-semibold text-ink-900">{k}</dt><dd>{v.lang}</dd></>))}
+          </dl>
+        </div>
+        <div class="card p-5 sm:p-6">
+          <h3 class="text-lg">Zusatzstoffe</h3>
+          <p class="text-xs text-ink-500">Kennzeichnung mit Zahlen</p>
+          <dl class="mt-3 grid grid-cols-[1.5rem_1fr] gap-x-2 gap-y-1 text-[0.92rem] text-ink-700">
+            {Object.entries(zusatzstoffeLegende).map(([k, v]) => (<><dt class="font-semibold text-ink-900">{k}</dt><dd>{v}</dd></>))}
+          </dl>
+        </div>
+      </div>
+
+      <p class="mt-8 text-sm leading-relaxed text-ink-600">{speisekarteHinweis}</p>
+
+      <details class="group card mt-8 overflow-hidden">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-display text-xl sm:p-6 [&::-webkit-details-marker]:hidden">
+          Zubereitung & Zutaten
+          <Icon name="chevron" class="h-5 w-5 shrink-0 text-ink-500 transition-transform duration-300 group-open:rotate-180" />
+        </summary>
+        <dl class="space-y-4 border-t border-ink-900/10 p-5 text-[0.95rem] leading-relaxed sm:p-6">
+          {zutaten.map((z) => (
+            <div>
+              <dt class="font-semibold text-ink-900">{z.titel}</dt>
+              <dd class="mt-0.5 text-ink-700">{z.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </details>
+
+      <p class="mt-8 text-sm text-ink-500">Stand: {speisekarteStand}</p>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  // Aktive Kategorie beim Scrollen hervorheben
+  const tabs = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-tab]'));
+  const setActive = (id: string) =>
+    tabs.forEach((t) => {
+      const on = t.dataset.tab === id;
+      if (on) {
+        if (t.getAttribute('aria-current') === 'true') return;
+        t.setAttribute('aria-current', 'true');
+        const bar = t.closest('ul');
+        if (bar && bar.scrollWidth > bar.clientWidth) bar.scrollTo({ left: t.offsetLeft - 24, behavior: 'smooth' });
+      } else t.removeAttribute('aria-current');
+    });
+  const sections = tabs.map((t) => document.getElementById(t.dataset.tab!)).filter(Boolean) as HTMLElement[];
+  const onScroll = () => {
+    const line = window.innerHeight * 0.3;
+    let current = sections[0]?.id;
+    for (const s of sections) if (s.getBoundingClientRect().top - line <= 0) current = s.id;
+    if (current) setActive(current);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Info-Icon: Kennzeichnung ausgeschrieben ein-/ausblenden
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('.info-btn'));
+  const close = (b: HTMLButtonElement) => {
+    b.setAttribute('aria-expanded', 'false');
+    const t = document.getElementById(b.getAttribute('aria-controls')!);
+    if (t) t.hidden = true;
+  };
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const open = b.getAttribute('aria-expanded') !== 'true';
+      buttons.forEach((o) => o !== b && close(o));
+      b.setAttribute('aria-expanded', String(open));
+      const t = document.getElementById(b.getAttribute('aria-controls')!);
+      if (t) t.hidden = !open;
+    }),
+  );
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && buttons.forEach(close));
+</script>

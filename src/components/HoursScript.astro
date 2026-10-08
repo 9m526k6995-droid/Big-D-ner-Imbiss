@@ -1,0 +1,32 @@
+---
+import { site } from '../config/site';
+---
+
+<script type="application/json" id="hours-data" set:html={JSON.stringify(site.hours)} />
+<script>
+  import { openState, berlinNow } from '../lib/hours';
+  import type { DayHours } from '../config/site';
+
+  const data = document.getElementById('hours-data');
+  if (data?.textContent) {
+    const hours: DayHours[] = JSON.parse(data.textContent);
+    const update = () => {
+      const state = openState(hours);
+      document.querySelectorAll<HTMLElement>('[data-open-text]').forEach((el) => (el.textContent = state.text));
+      document.querySelectorAll<HTMLElement>('[data-open-dot]').forEach((el) => {
+        el.classList.toggle('bg-emerald-500', state.open);
+        el.classList.toggle('bg-ink-500', !state.open);
+      });
+      const today = berlinNow().dayIdx;
+      document.querySelectorAll<HTMLElement>('[data-hours-row]').forEach((row) => {
+        const isToday = Number(row.dataset.hoursRow) === today;
+        row.classList.toggle('font-semibold', isToday);
+        row.classList.toggle('text-gold-700', isToday && !row.closest('[data-dark]'));
+        row.classList.toggle('text-gold-400', isToday && !!row.closest('[data-dark]'));
+        row.querySelector('.today-badge')?.classList.toggle('hidden', !isToday);
+      });
+    };
+    update();
+    setInterval(update, 60_000);
+  }
+</script>

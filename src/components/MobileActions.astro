@@ -1,0 +1,24 @@
+---
+import { telHref, routeUrl } from '../lib/site-helpers';
+import Icon from './Icon.astro';
+const items = [
+  { label: 'Anrufen', href: telHref, icon: 'phone', external: false },
+  { label: 'Speisekarte', href: '/speisekarte', icon: 'utensils', external: false },
+  { label: 'Route', href: routeUrl, icon: 'route', external: true },
+];
+---
+
+<nav aria-label="Schnellaktionen" class="fixed inset-x-0 bottom-0 z-40 border-t border-cream-50/10 bg-ink-900/95 px-3 pt-2 backdrop-blur-md md:hidden" style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom))">
+  <ul class="mx-auto grid max-w-md grid-cols-3 gap-1">
+    {
+      items.map((i) => (
+        <li>
+          <a href={i.href} {...i.external ? { target: '_blank', rel: 'noopener noreferrer' } : {}} class="flex flex-col items-center gap-0.5 rounded-xl py-1.5 text-[0.75rem] font-medium text-cream-100 active:bg-cream-50/10">
+            <Icon name={i.icon} class="h-[1.35rem] w-[1.35rem] text-gold-400" />
+            {i.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

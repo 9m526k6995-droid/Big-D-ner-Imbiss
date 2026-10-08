@@ -1,44 +1,107 @@
 ---
-import Icon from "./Icon.astro";
-import { site, telHref } from "../config/site";
+import { site } from '../config/site';
+import { nav } from '../data/nav';
+import { telHref, routeUrl } from '../lib/site-helpers';
+import Icon from './Icon.astro';
+import Button from './Button.astro';
+import Logo from './Logo.astro';
 
-/** Hauptnavigation – hier Menüpunkte ändern. */
-const nav = [
-  { href: "/", label: "Start" },
-  { href: "/speisekarte", label: "Speisekarte" },
-  { href: "/ueber-uns", label: "Über uns" },
-  { href: "/kontakt", label: "Kontakt" },
-];
-const pfad = Astro.url.pathname.replace(/\/$/, "") || "/";
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => {
+  const clean = href.split('#')[0] || '/';
+  if (href.includes('#')) return false;
+  return clean === path;
+};
 ---
 
-<header class="sticky top-0 z-50 border-b border-white/10 bg-ink/95 text-white backdrop-blur">
-  <div class="container-x flex h-16 items-center justify-between gap-4">
-    <a href="/" class="shrink-0" aria-label={`${site.name} – Startseite`}>
-      <img src="/logo-weiss.svg" alt="" width="105" height="44" class="h-11 w-auto" />
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent bg-cream-100/90 backdrop-blur-md transition-colors duration-300 data-[scrolled=true]:border-ink-900/10 data-[scrolled=true]:bg-cream-100/95">
+  <div class="container-page flex h-16 items-center justify-between gap-6 lg:h-[4.5rem]">
+    <a href="/" class="flex items-center gap-3" aria-label={`${site.name} – zur Startseite`}>
+      <Logo />
     </a>
-    <nav class="hidden items-center gap-8 md:flex" aria-label="Hauptnavigation">
-      {nav.map((n) => (
-        <a href={n.href} aria-current={pfad === n.href ? "page" : undefined} class="text-[15px] font-medium text-white/80 transition hover:text-white aria-[current=page]:text-white aria-[current=page]:underline aria-[current=page]:decoration-red aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">{n.label}</a>
-      ))}
+
+    <nav aria-label="Hauptnavigation" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class="relative rounded-full px-3.5 py-2 text-[0.95rem] font-medium text-ink-700 transition-colors hover:text-ink-900 aria-[current=page]:text-ink-900 after:absolute after:inset-x-3.5 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-gold-500 after:transition-transform aria-[current=page]:after:scale-x-100 hover:after:scale-x-100"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
     </nav>
-    <div class="flex items-center gap-2">
-      <a href={telHref} class="btn btn-red !min-h-10 !px-4 !py-2 text-sm"><Icon name="phone" class="h-4 w-4" /><span class="hidden sm:inline">{site.telefon.anzeige}</span><span class="sm:hidden">Anrufen</span></a>
-      <button type="button" data-menu-button aria-expanded="false" aria-controls="mobilmenue" aria-label="Menü öffnen" class="grid h-10 w-10 place-items-center rounded-full border border-white/25 md:hidden">
-        <Icon name="menu" />
-      </button>
+
+    <div class="hidden items-center gap-2 lg:flex">
+      <Button href={routeUrl} variant="ghost" icon="route" external>Route planen</Button>
+      <Button href={telHref} variant="primary" icon="phone">Jetzt anrufen</Button>
     </div>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink-900/15 lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Menü öffnen"
+    >
+      <Icon name="menu" class="icon-open h-6 w-6" />
+      <Icon name="close" class="icon-close hidden h-6 w-6" />
+    </button>
   </div>
-  <div id="mobilmenue" data-menu hidden class="fixed inset-x-0 top-16 z-40 h-[calc(100dvh-4rem)] overflow-y-auto bg-ink px-6 pb-10 pt-6 md:hidden">
-    <nav aria-label="Mobile Navigation" class="flex flex-col">
-      {nav.map((n) => (
-        <a href={n.href} class="border-b border-white/10 py-5 font-display text-4xl uppercase tracking-wide">{n.label}</a>
-      ))}
+
+  <div id="mobile-menu" class="hidden border-t border-ink-900/10 bg-cream-100 lg:hidden">
+    <nav aria-label="Mobile Navigation" class="container-page py-4">
+      <ul class="divide-y divide-ink-900/10">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} class="flex items-center justify-between py-3.5 font-display text-2xl aria-[current=page]:text-gold-700">
+                {item.label}
+                <Icon name="arrow" class="h-5 w-5 text-ink-500" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-5 grid grid-cols-2 gap-3 pb-3">
+        <Button href={telHref} icon="phone">Jetzt anrufen</Button>
+        <Button href={routeUrl} variant="ghost" icon="route" external>Route planen</Button>
+      </div>
     </nav>
-    <div class="mt-8 grid gap-3">
-      <a href={telHref} class="btn btn-red"><Icon name="phone" />Jetzt telefonisch vorbestellen</a>
-      <a href={site.route} class="btn btn-ghost" rel="noopener" target="_blank"><Icon name="route" />Route starten</a>
-    </div>
-    <p class="mt-8 text-sm text-white/60">{site.adresse.strasse}, {site.adresse.plz} {site.adresse.ort}<br />{site.adresse.orientierung}</p>
   </div>
 </header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  const onScroll = () => header?.setAttribute('data-scrolled', String(window.scrollY > 8));
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const setOpen = (open: boolean) => {
+    if (!toggle || !menu) return;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+    menu.classList.toggle('hidden', !open);
+    toggle.querySelector('.icon-open')?.classList.toggle('hidden', open);
+    toggle.querySelector('.icon-close')?.classList.toggle('hidden', !open);
+  };
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => e.matches && setOpen(false));
+</script>

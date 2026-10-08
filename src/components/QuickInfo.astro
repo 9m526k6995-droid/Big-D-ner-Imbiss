@@ -1,0 +1,36 @@
+---
+import { site } from '../config/site';
+import { summarizeHours } from '../lib/hours';
+import { telHref, ratingText, reviewsUrl } from '../lib/site-helpers';
+import Icon from './Icon.astro';
+
+const items = [
+  { icon: 'pin', label: 'Adresse', value: site.address.street, sub: site.address.landmark, href: '/kontakt' },
+  { icon: 'phone', label: 'Telefon', value: site.phone.display, sub: 'Vorbestellung möglich', href: telHref },
+  { icon: 'clock', label: 'Öffnungszeiten', value: summarizeHours(site.hours), sub: '', href: '/kontakt#oeffnungszeiten', live: true },
+  { icon: 'star', label: 'Google', value: `${ratingText} Sterne`, sub: `${site.google.reviewCount} Bewertungen`, href: reviewsUrl, external: true },
+];
+---
+
+<section aria-label="Schnellinfo" class="relative z-10 -mt-8 sm:-mt-10">
+  <div class="container-page">
+    <ul class="grid gap-px overflow-hidden rounded-2xl border border-ink-900/10 bg-ink-900/10 shadow-[0_24px_50px_-30px_rgba(27,26,24,0.45)] sm:grid-cols-2 lg:grid-cols-4">
+      {
+        items.map((i) => (
+          <li class="bg-cream-50">
+            <a href={i.href} {...i.external ? { target: '_blank', rel: 'noopener noreferrer' } : {}} class="flex h-full items-start gap-4 p-5 transition-colors hover:bg-white sm:p-6">
+              <span class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink-900 text-gold-400">
+                <Icon name={i.icon} class="h-5 w-5" filled={i.icon === 'star'} />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-xs font-semibold uppercase tracking-[0.12em] text-ink-500">{i.label}</span>
+                <span class="mt-1 block font-display text-[1.15rem] leading-snug text-ink-900" {...i.live ? { 'data-open-text': '' } : {}}>{i.value}</span>
+                {i.sub && <span class="block text-sm text-ink-600">{i.sub}</span>}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

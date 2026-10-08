@@ -1,0 +1,21 @@
+---
+import { site } from '../config/site';
+const { dark = false } = Astro.props as { dark?: boolean };
+---
+
+<table class:list={['w-full text-left', dark ? 'text-cream-200' : 'text-ink-700']}>
+  <caption class="sr-only">Öffnungszeiten von {site.name}</caption>
+  <tbody>
+    {
+      site.hours.map((h, i) => (
+        <tr data-hours-row={i} class:list={['border-b last:border-0', dark ? 'border-cream-50/10' : 'border-ink-900/10']}>
+          <th scope="row" class="py-3 pr-4 font-medium">
+            {h.day}
+            <span class="today-badge ml-2 hidden rounded-full bg-gold-500/20 px-2 py-0.5 text-[0.7rem] font-semibold uppercase tracking-wide text-gold-700">Heute</span>
+          </th>
+          <td class="py-3 text-right tabular-nums whitespace-nowrap">{h.open && h.close ? `${h.open} – ${h.close} Uhr` : 'Geschlossen'}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

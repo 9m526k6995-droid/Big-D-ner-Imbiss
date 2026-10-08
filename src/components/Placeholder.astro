@@ -1,0 +1,14 @@
+---
+/** Hochwertiger Platzhalter für Fotos, die noch folgen (kein <img>, daher nie ein kaputtes Bild). */
+import Icon from './Icon.astro';
+const { text = 'Foto folgt', class: cls = '', icon = 'camera' } = Astro.props as { text?: string; class?: string; icon?: string };
+---
+
+<span class:list={['relative flex items-center justify-center overflow-hidden bg-cream-200', cls]} role="img" aria-label={text}>
+  <span class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(209,171,92,0.28),transparent_60%),radial-gradient(circle_at_80%_90%,rgba(27,26,24,0.10),transparent_55%)]" aria-hidden="true"></span>
+  <span class="absolute inset-3 rounded-xl border border-dashed border-ink-900/15" aria-hidden="true"></span>
+  <span class="relative flex flex-col items-center gap-2.5 px-4 text-center" aria-hidden="true">
+    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-ink-900 text-gold-400"><Icon name={icon} class="h-5 w-5" /></span>
+    <span class="font-display text-[1.05rem] leading-snug text-ink-700">{text}</span>
+  </span>
+</span>

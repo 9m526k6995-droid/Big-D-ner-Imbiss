@@ -1,0 +1,11 @@
+---
+import SectionHeading from './SectionHeading.astro';
+const { eyebrow, title, text } = Astro.props as { eyebrow?: string; title: string; text?: string };
+---
+
+<section class="border-b border-ink-900/10 bg-cream-50">
+  <div class="container-page py-14 sm:py-20">
+    <SectionHeading tag="h1" {eyebrow} {title} {text} />
+    <slot />
+  </div>
+</section>

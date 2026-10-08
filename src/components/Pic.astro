@@ -1,0 +1,47 @@
+---
+/**
+ * Bild-Komponente für Fotos aus /fotos (Dateiname, z. B. "pide-01.jpg").
+ * Astro erzeugt im Build automatisch AVIF/WebP in mehreren Breiten.
+ * Fehlt die Datei, wird statt eines kaputten Bildes ein Platzhalter gezeigt.
+ */
+import { Picture } from 'astro:assets';
+import { foto } from '../lib/fotos';
+import Placeholder from './Placeholder.astro';
+
+interface Props {
+  datei: string | null | undefined;
+  alt: string;
+  sizes?: string;
+  priority?: boolean;
+  class?: string;
+  imgClass?: string;
+  /** object-position, z. B. "50% 30%" */
+  position?: string;
+  /** Text, falls kein Foto vorhanden ist */
+  fallback?: string;
+}
+const { datei, alt, sizes = '100vw', priority = false, class: cls = '', imgClass = '', position, fallback = 'Foto folgt' } = Astro.props;
+const img = foto(datei);
+if (datei && !img) console.warn(`[Pic] Foto fehlt: fotos/${datei}`);
+const widths = img ? [...new Set([480, 960, 1600].filter((w) => w < img.width).concat(Math.min(img.width, 1600)))] : [];
+---
+
+{
+  img ? (
+    <Picture
+      src={img}
+      alt={alt}
+      formats={['avif', 'webp']}
+      widths={widths}
+      sizes={sizes}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding={priority ? 'sync' : 'async'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      pictureAttributes={{ class: cls }}
+      class={imgClass}
+      style={position ? `object-position:${position}` : undefined}
+    />
+  ) : (
+    <Placeholder text={fallback} class={cls} />
+  )
+}

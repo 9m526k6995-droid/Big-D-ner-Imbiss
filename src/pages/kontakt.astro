@@ -1,31 +1,56 @@
 ---
-import Base from "../layouts/Base.astro";
-import Seitenkopf from "../components/Seitenkopf.astro";
-import Standort from "../components/Standort.astro";
-import Icon from "../components/Icon.astro";
-import { site, telHref, mailHref } from "../config/site";
-
-const wege = [
-  { icon: "phone" as const, titel: "Anrufen & vorbestellen", text: site.telefon.anzeige, href: telHref, extern: false },
-  { icon: "mail" as const, titel: "E-Mail", text: site.email, href: mailHref, extern: false },
-  { icon: "facebook" as const, titel: "Facebook", text: "Big Döner auf Facebook", href: site.facebook, extern: true },
-  { icon: "route" as const, titel: "Route", text: `${site.adresse.strasse}, ${site.adresse.ort}`, href: site.route, extern: true },
-];
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import OpeningHoursTable from '../components/OpeningHoursTable.astro';
+import { site } from '../config/site';
+import { telHref, mailHref, routeUrl, socialLinks } from '../lib/site-helpers';
 ---
 
-<Base title="Kontakt & Anfahrt | Big Döner Imbiss Passau" description="Big Döner Imbiss, Spitalhofstraße 95, 94032 Passau – gegenüber PaWo-Center. Telefon 0177 8780402, Öffnungszeiten, Route und kostenlose Parkplätze.">
-  <Seitenkopf eyebrow="Kontakt" titel="Ruf an, wir legen los" text="Am schnellsten geht es telefonisch: Bestellung durchgeben, kurz warten, abholen." />
-  <section class="bg-paper py-12 sm:py-16">
-    <ul class="container-x grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {wege.map((w) => (
-        <li>
-          <a href={w.href} target={w.extern ? "_blank" : undefined} rel={w.extern ? "noopener" : undefined} class="group flex h-full flex-col gap-4 rounded-3xl bg-white p-6 shadow-card ring-1 ring-line transition hover:-translate-y-0.5 hover:ring-ink/30">
-            <span class="grid h-12 w-12 place-items-center rounded-full bg-red/10 text-red transition group-hover:bg-red group-hover:text-white"><Icon name={w.icon} /></span>
-            <span><span class="block font-semibold">{w.titel}</span><span class="break-words text-muted">{w.text}</span></span>
-          </a>
-        </li>
-      ))}
-    </ul>
+<Layout
+  title="Kontakt & Öffnungszeiten | Big Döner Imbiss, Spitalhofstraße 95, Passau"
+  description="Big Döner Imbiss, Spitalhofstraße 95, 94032 Passau (gegenüber PaWo-Center) – Telefon 0177 8780402, Öffnungszeiten, Route und telefonische Vorbestellung."
+>
+  <PageHeader eyebrow="Kontakt" title="Besucht uns gegenüber dem PaWo-Center" text="Anrufen, vorbestellen, Route planen oder einfach vorbeikommen – wir freuen uns auf euch." />
+
+  <section class="section">
+    <div class="container-page grid gap-8 lg:grid-cols-2 lg:gap-12">
+      <div class="card min-w-0 p-6 sm:p-9">
+        <h2 class="text-2xl">{site.name}</h2>
+        <address class="mt-4 text-lg not-italic leading-relaxed text-ink-700">
+          {site.address.street}<br />{site.address.zip} {site.address.city}<br />{site.address.landmark}
+        </address>
+        <p class="mt-5 flex items-center gap-3 text-lg">
+          <Icon name="phone" class="h-5 w-5 text-gold-700" />
+          <a href={telHref} class="font-medium underline decoration-gold-500 decoration-2 underline-offset-4">{site.phone.display}</a>
+        </p>
+        <p class="mt-1 pl-8 text-[0.95rem] text-ink-600">Telefonische Vorbestellung möglich</p>
+        <p class="mt-3 flex items-center gap-3 text-lg">
+          <Icon name="mail" class="h-5 w-5 shrink-0 text-gold-700" />
+          <a href={mailHref} class="break-all font-medium underline decoration-gold-500 decoration-2 underline-offset-4">{site.email}</a>
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button href={telHref} icon="phone">Jetzt anrufen</Button>
+          <Button href={routeUrl} variant="ghost" icon="route" external>Route planen</Button>
+          {socialLinks.map((s) => <Button href={s.url} variant="ghost" icon={s.id} external>{s.label}</Button>)}
+        </div>
+        <ul class="mt-8 flex flex-wrap gap-2 border-t border-ink-900/10 pt-6">
+          {site.features.map((f) => <li class="rounded-full bg-cream-200 px-3.5 py-1 text-sm text-ink-700">{f}</li>)}
+        </ul>
+      </div>
+
+      <div class="card min-w-0 p-6 sm:p-9" id="oeffnungszeiten">
+        <h2 class="text-2xl">Öffnungszeiten</h2>
+        <p class="mt-2 flex items-center gap-2 text-[0.95rem] text-ink-700">
+          <span data-open-dot class="h-2 w-2 rounded-full bg-ink-500"></span>
+          <span data-open-text>Öffnungszeiten siehe Tabelle</span>
+        </p>
+        <div class="mt-4"><OpeningHoursTable /></div>
+        <p class="mt-6 rounded-xl bg-cream-200/70 p-4 text-[0.95rem] leading-relaxed text-ink-700">
+          <strong class="font-semibold text-ink-900">{site.preorder.title}</strong> {site.preorder.text}
+        </p>
+      </div>
+    </div>
   </section>
-  <Standort />
-</Base>
+</Layout>

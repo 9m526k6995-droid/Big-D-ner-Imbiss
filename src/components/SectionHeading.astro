@@ -1,0 +1,12 @@
+---
+const { eyebrow, title, text, align = 'left', tag = 'h2', dark = false } = Astro.props as {
+  eyebrow?: string; title: string; text?: string; align?: 'left' | 'center'; tag?: 'h1' | 'h2'; dark?: boolean;
+};
+const Tag = tag;
+---
+
+<div class:list={['max-w-2xl', align === 'center' && 'mx-auto text-center']}>
+  {eyebrow && <p class:list={['eyebrow', dark && 'text-gold-400']}>{eyebrow}</p>}
+  <Tag class:list={['font-display text-balance text-3xl leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl', eyebrow && 'mt-3', dark ? 'text-cream-50' : 'text-ink-900']}>{title}</Tag>
+  {text && <p class:list={['mt-4 text-pretty text-lg leading-relaxed', dark ? 'text-cream-200' : 'text-ink-600']}>{text}</p>}
+</div>
